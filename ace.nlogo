@@ -1,101 +1,58 @@
-breed [sharks shark]
-breed [fishes fish]
+;; variables globales
+globals[
+  n-row
+]
 
-turtles-own[
-  mensaje
+patches-own[
+  valor
 ]
 
 to setup
   clear-all
   reset-ticks
-  create-sharks 10[
-    set shape "shark"
-    setxy random-xcor  random-ycor
-    set color blue
-    set size 1.5
+  ask patches[
+   set valor 0
   ]
-  create-fishes n-turtles
-  [
-    set shape "fish"
-    set color red
-    setxy random-xcor  random-ycor
-    set mensaje false
-    ;pen-down
-  ]
-  set-mensaje
+  set n-row max-pycor
 end
+
+to unit
+  setup
+  ask patch random-xcor max-pycor[
+    set valor 1
+    set pcolor red
+  ]
+end
+
+to set-random
+  setup
+  ask patches with [pycor = max-pycor]
+  [
+    let xcoords random-pxcor
+    if pxcor < xcoords [
+      set valor 1
+      set pcolor red
+    ]
+  ]
+end
+
 
 to go
-   ask fishes [
-    brown-motion
+  if n-row = min-pycor[
+    stop
   ]
-  ;;; wait random 10
-  ask sharks[
-    brown-motion
-    comer-tortugas
-  ]
+  set n-row (n-row - 1)
   tick
-end
-
-to set-mensaje
-  ask n-of 4 turtles[
-    set mensaje true
-    set color green
-  ]
-end
-
-to comer-tortugas
-    let comestibles fishes-on neighbors ;;fishes-here
-    if comestibles != nobody[
-      ask comestibles [die]
-    ]
-end
-
-to share-mensaje
-  let vecinos-sin-mensaje (turtles-on neighbors) with [not mensaje]
-  if vecinos-sin-mensaje != nobody [
-    ask vecinos-sin-mensaje [
-      set mensaje true
-      set color green
-      cambiar-direccion
-    ]
-  ]
-end
-
-to cambiar-direccion
-  rt 180
-end
-
-to brown-motion
-    rt random rotation
-    lt random rotation
-    forward distancia
-end
-
-to levy-flight
-  ;; vuelo de levy funcion
-  ask turtles[
-    ;; let aux levy-jump
-    forward levy-jump  ;; Llama a funcion para determinar salto
-    rt random rotation
-    lt random rotation
-  ]
-end
-
-to-report levy-jump
-  let X (pi * (random-float 1))
-  let bigstep distancia * tan(X * (180 / pi))
-  report bigstep
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-213
+210
 10
-812
-610
+647
+448
 -1
 -1
-17.91
+13.0
 1
 10
 1
@@ -116,12 +73,12 @@ ticks
 30.0
 
 BUTTON
-46
-59
-112
-92
+44
+64
+107
+97
 NIL
-setup\n
+unit
 NIL
 1
 T
@@ -133,13 +90,13 @@ NIL
 1
 
 BUTTON
-38
-162
-101
-195
+78
+139
+183
+172
 NIL
-go\n
-T
+set-random
+NIL
 1
 T
 OBSERVER
@@ -149,64 +106,22 @@ NIL
 NIL
 1
 
-SLIDER
-32
-268
-204
-301
-rotation
-rotation
-0
-180
-146.0
-1
-1
+BUTTON
+81
+258
+144
+291
 NIL
-HORIZONTAL
-
-SLIDER
-30
-323
-202
-356
-distancia
-distancia
-0
-4
-1.5
-.1
+go
+T
 1
-NIL
-HORIZONTAL
-
-INPUTBOX
-852
-80
-1001
-140
-n-turtles
-500.0
-1
-0
-Number
-
-PLOT
-923
-331
-1123
-481
-plot 1
+T
+OBSERVER
 NIL
 NIL
-0.0
-10.0
-0.0
-10.0
-true
-true
-"" ""
-PENS
-"default" 1.0 0 -5298144 true "" "plot count fishes"
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -436,19 +351,6 @@ Polygon -7500403 true true 165 180 165 210 225 180 255 120 210 135
 Polygon -7500403 true true 135 105 90 60 45 45 75 105 135 135
 Polygon -7500403 true true 165 105 165 135 225 105 255 45 210 60
 Polygon -7500403 true true 135 90 120 45 150 15 180 45 165 90
-
-shark
-false
-0
-Polygon -7500403 true true 283 153 288 149 271 146 301 145 300 138 247 119 190 107 104 117 54 133 39 134 10 99 9 112 19 142 9 175 10 185 40 158 69 154 64 164 80 161 86 156 132 160 209 164
-Polygon -7500403 true true 199 161 152 166 137 164 169 154
-Polygon -7500403 true true 188 108 172 83 160 74 156 76 159 97 153 112
-Circle -16777216 true false 256 129 12
-Line -16777216 false 222 134 222 150
-Line -16777216 false 217 134 217 150
-Line -16777216 false 212 134 212 150
-Polygon -7500403 true true 78 125 62 118 63 130
-Polygon -7500403 true true 121 157 105 161 101 156 106 152
 
 sheep
 false
